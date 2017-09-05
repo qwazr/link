@@ -44,6 +44,7 @@ class Transaction {
 		this.response = response;
 		session = new SessionWrapper(request);
 		dataModel = new HashMap<>();
+		dataModel.put("request", request);
 		dataModel.put("session", session);
 	}
 

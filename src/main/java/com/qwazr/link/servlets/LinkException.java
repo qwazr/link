@@ -15,6 +15,8 @@
  */
 package com.qwazr.link.servlets;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -39,8 +41,9 @@ public class LinkException extends RuntimeException {
 	void sendError(HttpServletResponse response) throws IOException {
 		response.setContentType("text/html");
 		response.setStatus(500);
-		final PrintWriter writer = response.getWriter();
-		writer.println("<h3>" + title + "</h3>");
-		writer.println("<p>" + getMessage() + "</p>");
+		try (final PrintWriter writer = response.getWriter()) {
+			writer.println("<h3>" + StringEscapeUtils.escapeHtml4(title) + "</h3>");
+			writer.println("<p>" + StringEscapeUtils.escapeHtml4(getMessage()) + "</p>");
+		}
 	}
 }

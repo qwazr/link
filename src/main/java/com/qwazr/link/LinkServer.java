@@ -16,7 +16,10 @@
 package com.qwazr.link;
 
 import com.qwazr.library.freemarker.FreeMarkerTool;
+import com.qwazr.link.servlets.EditorServlet;
 import com.qwazr.link.servlets.IndexServlet;
+import com.qwazr.link.servlets.JobsServlet;
+import com.qwazr.link.servlets.LibraryServlet;
 import com.qwazr.server.BaseServer;
 import com.qwazr.server.GenericServer;
 import com.qwazr.server.ServletContextBuilder;
@@ -46,10 +49,18 @@ public class LinkServer implements BaseServer {
 
 		final ServletContextBuilder servletContext = builder.getWebAppContext();
 
+		final ComponentsManager componentManager = new ComponentsManager().registerServices();
+
 		final FreeMarkerTool freemarkerResources = FreeMarkerTool.of().useClassloader(true).build();
 		freemarkerResources.load();
 
 		webappManager.registerJavaServlet(IndexServlet.class, () -> new IndexServlet(freemarkerResources),
+				servletContext);
+		webappManager.registerJavaServlet(JobsServlet.class, () -> new JobsServlet(freemarkerResources),
+				servletContext);
+		webappManager.registerJavaServlet(LibraryServlet.class,
+				() -> new LibraryServlet(freemarkerResources, componentManager), servletContext);
+		webappManager.registerJavaServlet(EditorServlet.class, () -> new EditorServlet(freemarkerResources),
 				servletContext);
 		webappManager.registerStaticServlet("/s/*", "com.qwazr.link.front.statics", servletContext);
 		//webappManager.registerJaxRsResources(

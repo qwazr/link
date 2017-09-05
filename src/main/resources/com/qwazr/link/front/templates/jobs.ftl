@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <#include 'includes/head.ftl'>
-    <title>Qwazr LINK</title>
+    <title>LINK - Jobs</title>
 </head>
 <body>
 <#include "includes/nav.ftl">
 <div class="container">
     <br/>
-    <h1 class="text-center">Welcome to Qwazr LINK</h1>
+    <h3>List of your configured Jobs</h3>
 <#include 'includes/messages.ftl'>
 </div>
 <#include 'includes/foot.ftl'>

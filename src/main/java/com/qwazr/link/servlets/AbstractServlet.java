@@ -18,12 +18,14 @@ package com.qwazr.link.servlets;
 import com.qwazr.library.freemarker.FreeMarkerTool;
 import com.qwazr.utils.LoggerUtils;
 import freemarker.template.TemplateException;
+import org.apache.commons.text.StringEscapeUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +47,16 @@ abstract class AbstractServlet extends HttpServlet {
 		try {
 			freeMarkerTool.template(templatePath, transaction.dataModel, transaction.response);
 		} catch (TemplateException e) {
-			transaction.response.sendError(500, e.getMessage());
+			transaction.response.reset();
+			transaction.response.setStatus(500);
+			transaction.response.setContentType("text/html");
+			try (final PrintWriter pw = transaction.response.getWriter()) {
+				pw.println("<html><body><pre>");
+				pw.println(StringEscapeUtils.escapeHtml4(e.getMessage()));
+				pw.println("</pre></body></html>");
+			} catch (IllegalStateException e2) {
+				throw new ServletException(e);
+			}
 		}
 	}
 
