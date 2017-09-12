@@ -22,6 +22,7 @@ import com.qwazr.link.servlets.JobsServlet;
 import com.qwazr.link.servlets.LibraryServlet;
 import com.qwazr.server.BaseServer;
 import com.qwazr.server.GenericServer;
+import com.qwazr.server.GenericServerBuilder;
 import com.qwazr.server.ServletContextBuilder;
 import com.qwazr.server.configuration.ServerConfiguration;
 import com.qwazr.webapps.WebappManager;
@@ -40,7 +41,7 @@ public class LinkServer implements BaseServer {
 
 		final ExecutorService executorService = Executors.newCachedThreadPool();
 
-		final GenericServer.Builder builder = GenericServer.of(configuration, executorService);
+		final GenericServerBuilder builder = GenericServer.of(configuration, executorService);
 
 		//final ScriptManager scriptManager = new ScriptManager(executorService, null).registerContextAttribute(builder)
 		//		.registerWebService(webServices);
