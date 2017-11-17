@@ -15,11 +15,13 @@
  */
 package com.qwazr.link;
 
+import com.qwazr.component.ComponentsManager;
 import com.qwazr.library.freemarker.FreeMarkerTool;
 import com.qwazr.link.servlets.EditorServlet;
 import com.qwazr.link.servlets.IndexServlet;
 import com.qwazr.link.servlets.JobsServlet;
 import com.qwazr.link.servlets.LibraryServlet;
+import com.qwazr.scripts.ScriptManager;
 import com.qwazr.server.BaseServer;
 import com.qwazr.server.GenericServer;
 import com.qwazr.server.GenericServerBuilder;
@@ -43,9 +45,6 @@ public class LinkServer implements BaseServer {
 
 		final GenericServerBuilder builder = GenericServer.of(configuration, executorService);
 
-		//final ScriptManager scriptManager = new ScriptManager(executorService, null).registerContextAttribute(builder)
-		//		.registerWebService(webServices);
-
 		final WebappManager webappManager = new WebappManager(null, builder);
 
 		final ServletContextBuilder servletContext = builder.getWebAppContext();
@@ -55,8 +54,10 @@ public class LinkServer implements BaseServer {
 		final FreeMarkerTool freemarkerResources = FreeMarkerTool.of().useClassloader(true).build();
 		freemarkerResources.load();
 
-		webappManager.registerJavaServlet(IndexServlet.class, () -> new IndexServlet(freemarkerResources),
-				servletContext);
+		final ScriptManager scriptManager = new ScriptManager(executorService, null);
+
+		webappManager.registerJavaServlet(IndexServlet.class,
+				() -> new IndexServlet(freemarkerResources, scriptManager), servletContext);
 		webappManager.registerJavaServlet(JobsServlet.class, () -> new JobsServlet(freemarkerResources),
 				servletContext);
 		webappManager.registerJavaServlet(LibraryServlet.class,

@@ -8,7 +8,7 @@
 <#include "includes/nav.ftl">
 <div class="container">
     <br/>
-    <h3>List of your configured Jobs</h3>
+    <h3>Configured Job list</h3>
 <#include 'includes/messages.ftl'>
 </div>
 <#include 'includes/foot.ftl'>

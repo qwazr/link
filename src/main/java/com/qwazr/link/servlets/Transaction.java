@@ -48,8 +48,12 @@ class Transaction {
 		dataModel.put("session", session);
 	}
 
+	String getRequestParameter(String name) {
+		return request.getParameter(name);
+	}
+
 	Integer getRequestParameter(String name, Integer defaultValue) {
-		final String value = request.getParameter(name);
+		final String value = getRequestParameter(name);
 		return value == null ? defaultValue : Integer.parseInt(value);
 	}
 

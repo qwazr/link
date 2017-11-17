@@ -23,8 +23,8 @@ import javax.servlet.http.HttpSession;
  */
 public class SessionWrapper {
 
-	private enum Attributes {
-		MESSAGES
+	enum Attributes {
+		MESSAGES, LINKSCRIPT
 	}
 
 	private final HttpSession session;

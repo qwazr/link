@@ -16,21 +16,51 @@
 package com.qwazr.link.servlets;
 
 import com.qwazr.library.freemarker.FreeMarkerTool;
+import com.qwazr.scripts.RunThreadAbstract;
+import com.qwazr.scripts.ScriptManager;
+import com.qwazr.utils.IOUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @WebServlet(name = "index", urlPatterns = "")
 public class IndexServlet extends AbstractServlet {
 
-	public IndexServlet(final FreeMarkerTool freemarker) {
+	final ScriptManager scriptManager;
+
+	public IndexServlet(final FreeMarkerTool freemarker, final ScriptManager scriptManager) {
 		super(freemarker);
+		this.scriptManager = scriptManager;
 	}
 
 	@Override
 	protected void doGet(final Transaction transaction) throws ServletException, IOException {
+		transaction.dataModel.put("linkscript",
+				transaction.session.getAttribute(SessionWrapper.Attributes.LINKSCRIPT, String.class));
 		template("/com/qwazr/link/front/templates/index.ftl", transaction);
+	}
+
+	@Override
+	protected void doPost(final Transaction transaction) throws ServletException, IOException {
+		final String linkScript = transaction.getRequestParameter("linkscript");
+		transaction.session.setAttribute(SessionWrapper.Attributes.LINKSCRIPT, linkScript);
+		final Path scriptPath = Files.createTempFile("qwazr-link", ".js");
+		try {
+			IOUtils.writeStringAsFile(linkScript, scriptPath.toFile());
+			final RunThreadAbstract run = scriptManager.getService().runSync(scriptPath.toString(), null);
+			final Exception e = run.getException();
+			if (e != null)
+				transaction.addMessage(e);
+			transaction.dataModel.put("scriptout", run.getOut());
+		} catch (ClassNotFoundException e) {
+			transaction.addMessage(e);
+		} finally {
+			Files.deleteIfExists(scriptPath);
+		}
+		doGet(transaction);
 	}
 
 }

@@ -16,7 +16,7 @@
 package com.qwazr.link.servlets;
 
 import com.qwazr.library.freemarker.FreeMarkerTool;
-import com.qwazr.link.ComponentsManager;
+import com.qwazr.component.ComponentsManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
