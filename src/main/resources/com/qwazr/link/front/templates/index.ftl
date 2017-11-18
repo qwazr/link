@@ -13,6 +13,7 @@
             <label for="linkscript">Script Editor</label>
             <textarea class="form-control" id="linkscript" name="linkscript" rows="18">${linkscript!?html}</textarea>
         </div>
+    <#--<div id="editor">${linkscript!?html}</div>-->
         <button type="submit" class="btn btn-primary">Execute</button>
     </form>
 <#include 'includes/messages.ftl'>
