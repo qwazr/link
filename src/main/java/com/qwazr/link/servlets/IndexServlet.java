@@ -23,6 +23,7 @@ import com.qwazr.utils.IOUtils;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -49,7 +50,7 @@ public class IndexServlet extends AbstractServlet {
 		transaction.session.setAttribute(SessionWrapper.Attributes.LINKSCRIPT, linkScript);
 		final Path scriptPath = Files.createTempFile("qwazr-link", ".js");
 		try {
-			IOUtils.writeStringAsFile(linkScript, scriptPath.toFile());
+			IOUtils.writeStringToPath(linkScript, StandardCharsets.UTF_8, scriptPath);
 			final RunThreadAbstract run = scriptManager.getService().runSync(scriptPath.toString(), null);
 			final Exception e = run.getException();
 			if (e != null)
