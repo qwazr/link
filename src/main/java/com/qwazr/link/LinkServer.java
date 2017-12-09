@@ -25,12 +25,10 @@ import com.qwazr.scripts.ScriptManager;
 import com.qwazr.server.BaseServer;
 import com.qwazr.server.GenericServer;
 import com.qwazr.server.GenericServerBuilder;
-import com.qwazr.server.ServletContextBuilder;
 import com.qwazr.server.configuration.ServerConfiguration;
 import com.qwazr.webapps.WebappManager;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,16 +36,11 @@ public class LinkServer implements BaseServer {
 
 	private final GenericServer server;
 
-	private LinkServer(final ServerConfiguration configuration)
-			throws IOException, URISyntaxException, ReflectiveOperationException {
+	private LinkServer(final ServerConfiguration configuration) throws IOException, ReflectiveOperationException {
 
 		final ExecutorService executorService = Executors.newCachedThreadPool();
 
 		final GenericServerBuilder builder = GenericServer.of(configuration, executorService);
-
-		final WebappManager webappManager = new WebappManager(null, builder);
-
-		final ServletContextBuilder servletContext = builder.getWebAppContext();
 
 		final ComponentsManager componentManager = new ComponentsManager().registerServices();
 
@@ -56,15 +49,16 @@ public class LinkServer implements BaseServer {
 
 		final ScriptManager scriptManager = new ScriptManager(executorService, null);
 
-		webappManager.registerJavaServlet(IndexServlet.class,
-				() -> new IndexServlet(freemarkerResources, scriptManager), servletContext);
-		webappManager.registerJavaServlet(JobsServlet.class, () -> new JobsServlet(freemarkerResources),
-				servletContext);
-		webappManager.registerJavaServlet(LibraryServlet.class,
-				() -> new LibraryServlet(freemarkerResources, componentManager), servletContext);
-		webappManager.registerJavaServlet(EditorServlet.class, () -> new EditorServlet(freemarkerResources),
-				servletContext);
-		webappManager.registerStaticServlet("/s/*", "com.qwazr.link.front.statics", servletContext);
+		final WebappManager.Builder webappBuilder = WebappManager.of(builder, builder.getWebAppContext());
+
+		webappBuilder.registerJavaServlet(IndexServlet.class,
+				() -> new IndexServlet(freemarkerResources, scriptManager));
+		webappBuilder.registerJavaServlet(JobsServlet.class, () -> new JobsServlet(freemarkerResources));
+		webappBuilder.registerJavaServlet(LibraryServlet.class,
+				() -> new LibraryServlet(freemarkerResources, componentManager));
+		webappBuilder.registerJavaServlet(EditorServlet.class, () -> new EditorServlet(freemarkerResources));
+		webappBuilder.registerStaticServlet("/s/*", "com.qwazr.link.front.statics");
+		webappBuilder.build();
 		//webappManager.registerJaxRsResources(
 		//		ApplicationBuilder.of("/api/*").singletons(new ApiService(reposDirectory, indexService)), ctx);
 
