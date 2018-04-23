@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>qwazr-link</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.4.0</version>
     <name>QWAZR Link</name>
     <packaging>jar</packaging>
 
@@ -14,14 +13,14 @@
     <parent>
         <groupId>com.qwazr</groupId>
         <artifactId>qwazr-parent</artifactId>
-        <version>1.4.0-SNAPSHOT</version>
+        <version>1.4.0</version>
     </parent>
 
     <scm>
         <connection>scm:git:git@github.com:qwazr/link.git</connection>
         <developerConnection>scm:git:git@github.com:qwazr/link.git</developerConnection>
         <url>git@github.com:qwazr/link.git</url>
-        <tag>HEAD</tag>
+        <tag>v1.4.0</tag>
     </scm>
 
     <dependencies>
@@ -29,75 +28,75 @@
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-webapps</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-scripts</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-scheduler</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-audio</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-csv</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-email</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-files</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-html</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-markdown</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-odf</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-pdfbox</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-poi</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-rss</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-tess4j</artifactId>
-            <version>${qwazr.version}</version>
+            <version>1.4.0</version>
         </dependency>
 
     </dependencies>
@@ -120,8 +119,7 @@
                                     <shadedArtifactAttached>true</shadedArtifactAttached>
                                     <shadedClassifierName>exec</shadedClassifierName>
                                     <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                             <manifestEntries>
                                                 <Main-Class>com.qwazr.link.LinkServer</Main-Class>
                                                 <Implementation-Version>${project.version}-${buildNumber}
@@ -130,8 +128,7 @@
                                                 </Specification-Version>
                                             </manifestEntries>
                                         </transformer>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                                     </transformers>
                                     <filters>
                                         <filter>
