@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>qwazr-link</artifactId>
@@ -77,6 +78,12 @@
             <groupId>com.qwazr</groupId>
             <artifactId>qwazr-library-odf</artifactId>
             <version>1.4.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>tools</artifactId>
+                    <groupId>com.sun</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.qwazr</groupId>
@@ -109,7 +116,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.0.0</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -119,7 +125,8 @@
                                     <shadedArtifactAttached>true</shadedArtifactAttached>
                                     <shadedClassifierName>exec</shadedClassifierName>
                                     <transformers>
-                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        <transformer
+                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                             <manifestEntries>
                                                 <Main-Class>com.qwazr.link.LinkServer</Main-Class>
                                                 <Implementation-Version>${project.version}-${buildNumber}
@@ -128,7 +135,8 @@
                                                 </Specification-Version>
                                             </manifestEntries>
                                         </transformer>
-                                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                        <transformer
+                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                     </transformers>
                                     <filters>
                                         <filter>
