@@ -26,56 +26,56 @@ import java.util.Set;
  */
 public class Messages {
 
-	private final Set<Message> messages = new LinkedHashSet<>();
+    private final Set<Message> messages = new LinkedHashSet<>();
 
-	public enum Type {
-		success, info, warning, danger
-	}
+    public enum Type {
+        success, info, warning, danger
+    }
 
-	public void add(Type type, String title, String message, boolean close) {
-		synchronized (messages) {
-			messages.add(new Message(type, title, message, close));
-		}
-	}
+    public void add(Type type, String title, String message, boolean close) {
+        synchronized (messages) {
+            messages.add(new Message(type, title, message, close));
+        }
+    }
 
-	public List<Message> getList() {
-		synchronized (messages) {
-			if (messages.isEmpty())
-				return Collections.emptyList();
-			final List<Message> msgs = new ArrayList<>(messages);
-			messages.clear();
-			return msgs;
-		}
-	}
+    public List<Message> getList() {
+        synchronized (messages) {
+            if (messages.isEmpty())
+                return Collections.emptyList();
+            final List<Message> msgs = new ArrayList<>(messages);
+            messages.clear();
+            return msgs;
+        }
+    }
 
-	public class Message {
+    public static class Message {
 
-		final Type type;
-		final String title;
-		final String content;
-		final boolean close;
+        final Type type;
+        final String title;
+        final String content;
+        final boolean close;
 
-		private Message(Type type, String title, String content, boolean close) {
-			this.type = type;
-			this.title = title;
-			this.content = content;
-			this.close = close;
-		}
+        private Message(Type type, String title, String content, boolean close) {
+            this.type = type;
+            this.title = title;
+            this.content = content;
+            this.close = close;
+        }
 
-		public String getType() {
-			return type.name();
-		}
+        public String getType() {
+            return type.name();
+        }
 
-		public String getTitle() {
-			return title;
-		}
+        public String getTitle() {
+            return title;
+        }
 
-		public String getContent() {
-			return content;
-		}
+        public String getContent() {
+            return content;
+        }
 
-		public boolean isClose() {
-			return close;
-		}
-	}
+        public boolean isClose() {
+            return close;
+        }
+    }
 }

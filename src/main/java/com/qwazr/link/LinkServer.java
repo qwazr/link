@@ -34,44 +34,72 @@ import java.util.concurrent.Executors;
 
 public class LinkServer implements BaseServer {
 
-	private final GenericServer server;
+    private final GenericServer server;
 
-	private LinkServer(final ServerConfiguration configuration) throws IOException, ReflectiveOperationException {
+    private final ExecutorService executorService;
 
-		final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ScriptManager scriptManager;
 
-		final GenericServerBuilder builder = GenericServer.of(configuration, executorService);
+    private LinkServer(final ServerConfiguration configuration) throws IOException, ReflectiveOperationException {
 
-		final ComponentsManager componentManager = new ComponentsManager().registerServices();
+        executorService = Executors.newCachedThreadPool();
 
-		final FreeMarkerTool freemarkerResources = FreeMarkerTool.of().useClassloader(true).build();
-		freemarkerResources.load();
+        final GenericServerBuilder builder = GenericServer.of(configuration, executorService);
 
-		final ScriptManager scriptManager = new ScriptManager(executorService, null);
+        final ComponentsManager componentManager = new ComponentsManager().registerServices();
 
-		final WebappManager.Builder webappBuilder = WebappManager.of(builder, builder.getWebAppContext());
+        final FreeMarkerTool freemarkerResources = FreeMarkerTool.of().useClassloader(true).build();
+        freemarkerResources.load();
 
-		webappBuilder.registerJavaServlet(IndexServlet.class,
-				() -> new IndexServlet(freemarkerResources, scriptManager));
-		webappBuilder.registerJavaServlet(JobsServlet.class, () -> new JobsServlet(freemarkerResources));
-		webappBuilder.registerJavaServlet(LibraryServlet.class,
-				() -> new LibraryServlet(freemarkerResources, componentManager));
-		webappBuilder.registerJavaServlet(EditorServlet.class, () -> new EditorServlet(freemarkerResources));
-		webappBuilder.registerStaticServlet("/s/*", "com.qwazr.link.front.statics");
-		webappBuilder.build();
-		//webappManager.registerJaxRsResources(
-		//		ApplicationBuilder.of("/api/*").singletons(new ApiService(reposDirectory, indexService)), ctx);
+        scriptManager = new ScriptManager(executorService, null);
 
-		server = builder.build();
-	}
+        final WebappManager.Builder webappBuilder = WebappManager.of(builder, builder.getWebAppContext());
 
-	@Override
-	public GenericServer getServer() {
-		return server;
-	}
+        webappBuilder.registerJavaServlet(IndexServlet.class,
+                () -> new IndexServlet(freemarkerResources, scriptManager));
+        webappBuilder.registerJavaServlet(JobsServlet.class, () -> new JobsServlet(freemarkerResources));
+        webappBuilder.registerJavaServlet(LibraryServlet.class,
+                () -> new LibraryServlet(freemarkerResources, componentManager));
+        webappBuilder.registerJavaServlet(EditorServlet.class, () -> new EditorServlet(freemarkerResources));
+        webappBuilder.registerStaticServlet("/s/*", "com.qwazr.link.front.statics");
+        webappBuilder.build();
+        //webappManager.registerJaxRsResources(
+        //		ApplicationBuilder.of("/api/*").singletons(new ApiService(reposDirectory, indexService)), ctx);
 
-	public static void main(final String... args) throws Exception {
-		new LinkServer(new ServerConfiguration(args)).start();
-	}
+        server = builder.build();
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    public ScriptManager getScriptManager() {
+        return scriptManager;
+    }
+
+    @Override
+    public GenericServer getServer() {
+        return server;
+    }
+
+    private static LinkServer INSTANCE;
+
+    public static LinkServer getInstance() {
+        return INSTANCE;
+    }
+
+    public static synchronized void main(final String... args) throws Exception {
+        if (INSTANCE != null)
+            throw new RuntimeException("The server is already started");
+        INSTANCE = new LinkServer(new ServerConfiguration(args));
+        INSTANCE.start();
+    }
+
+    public static synchronized void shutdown() {
+        if (INSTANCE == null)
+            return;
+        INSTANCE.server.stopAll();
+        INSTANCE = null;
+    }
 
 }
