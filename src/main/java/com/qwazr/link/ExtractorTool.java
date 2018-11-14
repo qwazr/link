@@ -17,9 +17,10 @@ package com.qwazr.link;
 
 import com.qwazr.component.ComponentInterface;
 import com.qwazr.component.annotations.Component;
+import com.qwazr.crawler.web.driver.DriverInterface;
 import com.qwazr.extractor.ExtractorManager;
 import com.qwazr.extractor.ExtractorServiceInterface;
-import com.qwazr.utils.ObjectMappers;
+import com.qwazr.extractor.ParserResult;
 
 import java.io.IOException;
 
@@ -39,7 +40,12 @@ public class ExtractorTool implements ComponentInterface {
     }
 
     @Component("Extract text and metadata")
-    public String extract(@Component("The path to the file") String path) throws IOException, ClassNotFoundException {
-        return ObjectMappers.JSON.writeValueAsString(getExtractorService().putMagic(null, null, path, null, null));
+    public ParserResult extract(@Component("The path to the file") String path) {
+        return getExtractorService().putMagic(null, null, path, null, null);
+    }
+
+    @Component("Extract text and metadata")
+    public ParserResult extract(@Component("A crawled content") DriverInterface.Content content) throws IOException {
+        return getExtractorService().putMagic(null, null, null, content.getContentType(), content.getInput());
     }
 }
