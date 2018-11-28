@@ -55,8 +55,9 @@ public class LinkServer implements BaseServer {
 
         final WebappManager.Builder webappBuilder = WebappManager.of(builder, builder.getWebAppContext());
 
+        webappBuilder.registerDefaultFaviconServlet().registerWebjars();
         webappBuilder.registerJavaServlet(IndexServlet.class,
-                () -> new IndexServlet(freemarkerResources, scriptManager));
+                ()  -> new IndexServlet(freemarkerResources, scriptManager.getService()));
         webappBuilder.registerJavaServlet(JobsServlet.class, () -> new JobsServlet(freemarkerResources));
         webappBuilder.registerJavaServlet(LibraryServlet.class,
                 () -> new LibraryServlet(freemarkerResources, componentManager));

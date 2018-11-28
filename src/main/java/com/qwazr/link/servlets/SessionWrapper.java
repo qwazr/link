@@ -23,34 +23,34 @@ import javax.servlet.http.HttpSession;
  */
 public class SessionWrapper {
 
-	enum Attributes {
-		MESSAGES, LINKSCRIPT
-	}
+    enum Attributes {
+        MESSAGES
+    }
 
-	private final HttpSession session;
+    private final HttpSession session;
 
-	SessionWrapper(HttpServletRequest request) {
-		session = request.getSession();
-	}
+    SessionWrapper(HttpServletRequest request) {
+        session = request.getSession();
+    }
 
-	public void invalidate() {
-		session.invalidate();
-	}
+    public void invalidate() {
+        session.invalidate();
+    }
 
-	<T> void setAttribute(Attributes attr, T value) {
-		session.setAttribute(attr.name(), value);
-	}
+    <T> void setAttribute(Attributes attr, T value) {
+        session.setAttribute(attr.name(), value);
+    }
 
-	<T> T getAttribute(Attributes attr, Class<T> tClass) {
-		return tClass.cast(session.getAttribute(attr.name()));
-	}
+    <T> T getAttribute(Attributes attr, Class<T> tClass) {
+        return tClass.cast(session.getAttribute(attr.name()));
+    }
 
-	public Messages getMessages() {
-		Messages messages = getAttribute(Attributes.MESSAGES, Messages.class);
-		if (messages != null)
-			return messages;
-		messages = new Messages();
-		setAttribute(Attributes.MESSAGES, messages);
-		return messages;
-	}
+    public Messages getMessages() {
+        Messages messages = getAttribute(Attributes.MESSAGES, Messages.class);
+        if (messages != null)
+            return messages;
+        messages = new Messages();
+        setAttribute(Attributes.MESSAGES, messages);
+        return messages;
+    }
 }

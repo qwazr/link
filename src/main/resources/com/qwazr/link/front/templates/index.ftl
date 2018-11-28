@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<#include 'includes/head.ftl'>
-    <title>Qwazr LINK</title>
+  <#include 'includes/head.ftl'>
+  <title>Qwazr LINK</title>
 </head>
 <body>
 <#include "includes/nav.ftl">
 <div class="container">
-    <br/>
-    <form method="post">
-        <div class="form-group">
-            <label for="linkscript">Script Editor</label>
-            <textarea class="form-control" id="linkscript" name="linkscript" rows="18">${linkscript!?html}</textarea>
-        </div>
-    <#--<div id="editor">${linkscript!?html}</div>-->
-        <button type="submit" class="btn btn-primary">Execute</button>
-    </form>
-<#include 'includes/messages.ftl'>
-<#if scriptout??>
-    <hr/>
-    <div>
-        <pre><code>${scriptout?html}</code></pre>
+  <br/>
+  <#include 'includes/messages.ftl'>
+  <form method="post">
+    <div class="input-group mb-3">
+      <input name="scriptPath" type="text" class="form-control" placeholder="Script path"
+             aria-label="Script path" value="${scriptPath!?html}">
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="submit">Execute</button>
+      </div>
     </div>
-</#if>
+  </form>
+  <#if scripts?has_content>
+    <table class="table">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>State</th>
+    </tr>
+    <#list scripts as key, status>
+      <tr>
+      <td>${key?html}</td>
+      <td>${status.name!?html}</td>
+      <td><#if status.startTime??>${status.startTime!?datetime}</#if></td>
+      <td><#if status.endTime??>${status.endTime!?datetime}</#if></td>
+      <td>${status.state!?html}</td>
+      </tr>
+    </#list>
+    </table>
+  </#if>
 </div>
 <#include 'includes/foot.ftl'>
 </body>

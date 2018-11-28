@@ -16,54 +16,40 @@
 package com.qwazr.link.servlets;
 
 import com.qwazr.library.freemarker.FreeMarkerTool;
-import com.qwazr.scripts.RunThreadAbstract;
-import com.qwazr.scripts.ScriptManager;
-import com.qwazr.utils.IOUtils;
+import com.qwazr.scripts.ScriptServiceInterface;
 import com.qwazr.utils.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @WebServlet(name = "index", urlPatterns = "")
 public class IndexServlet extends AbstractServlet {
 
-    final ScriptManager scriptManager;
+    private final ScriptServiceInterface scriptService;
 
-    public IndexServlet(final FreeMarkerTool freemarker, final ScriptManager scriptManager) {
+    public IndexServlet(final FreeMarkerTool freemarker, final ScriptServiceInterface scriptService) {
         super(freemarker);
-        this.scriptManager = scriptManager;
+        this.scriptService = scriptService;
     }
 
     @Override
     protected void doGet(final Transaction transaction) throws ServletException, IOException {
-        transaction.dataModel.put("linkscript",
-                transaction.session.getAttribute(SessionWrapper.Attributes.LINKSCRIPT, String.class));
+        transaction.dataModel.put("scripts", scriptService.getRunsStatus());
         template("/com/qwazr/link/front/templates/index.ftl", transaction);
     }
 
     @Override
     protected void doPost(final Transaction transaction) throws ServletException, IOException {
-        final String linkScript = transaction.getRequestParameter("linkscript");
-        if (StringUtils.isBlank(linkScript)) {
-            transaction.addMessage(Messages.Type.danger, "Error", "The script is empty.", true);
+        final String scriptPath = transaction.getRequestParameter("scriptPath");
+        transaction.dataModel.put("scriptPath", scriptPath);
+        if (StringUtils.isBlank(scriptPath)) {
+            transaction.addMessage(Messages.Type.danger, "Error", "The script path is empty.", true);
         } else {
-            transaction.session.setAttribute(SessionWrapper.Attributes.LINKSCRIPT, linkScript);
-            final Path scriptPath = Files.createTempFile("qwazr-link", ".js");
             try {
-                IOUtils.writeStringToPath(linkScript, StandardCharsets.UTF_8, scriptPath);
-                final RunThreadAbstract run = scriptManager.getService().runSync(scriptPath.toString(), null);
-                final Exception e = run.getException();
-                if (e != null)
-                    transaction.addMessage(e);
-                transaction.dataModel.put("scriptout", run.getOut());
+                scriptService.runAsync(scriptPath, null);
             } catch (ClassNotFoundException e) {
                 transaction.addMessage(e);
-            } finally {
-                Files.deleteIfExists(scriptPath);
             }
         }
         doGet(transaction);

@@ -15,6 +15,7 @@
  */
 package com.qwazr.link;
 
+import com.qwazr.component.ComponentInterface;
 import com.qwazr.component.annotations.Component;
 import com.qwazr.crawler.web.WebCrawlDefinition;
 import com.qwazr.crawler.web.WebCrawlStatus;
@@ -25,7 +26,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import java.io.IOException;
 
 @Component("Web crawler")
-public class WebCrawlerTool {
+public class WebCrawlerTool implements ComponentInterface {
 
     private static volatile WebCrawlerServiceInterface webCrawlerService;
 
