@@ -26,6 +26,7 @@
       <th>Start</th>
       <th>End</th>
       <th>State</th>
+      <th>Output</th>
     </tr>
     <#list scripts as key, status>
       <tr>
@@ -34,6 +35,12 @@
       <td><#if status.startTime??>${status.startTime!?datetime}</#if></td>
       <td><#if status.endTime??>${status.endTime!?datetime}</#if></td>
       <td>${status.state!?html}</td>
+      <td>
+      <div class="btn-group" role="group" aria-label="Script output">
+    <a target="_blank" class="btn btn-sm btn-success" href="/out?id=${key?html}">std</a>
+    <a target="_blank" class="btn btn-sm btn-danger" href="/err?id=${key?html}">err</a>
+      </div>
+      </td>
       </tr>
     </#list>
     </table>

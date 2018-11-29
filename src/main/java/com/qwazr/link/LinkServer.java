@@ -21,6 +21,8 @@ import com.qwazr.link.servlets.EditorServlet;
 import com.qwazr.link.servlets.IndexServlet;
 import com.qwazr.link.servlets.JobsServlet;
 import com.qwazr.link.servlets.LibraryServlet;
+import com.qwazr.link.servlets.StdErrServlet;
+import com.qwazr.link.servlets.StdOutServlet;
 import com.qwazr.scripts.ScriptManager;
 import com.qwazr.server.BaseServer;
 import com.qwazr.server.GenericServer;
@@ -57,11 +59,15 @@ public class LinkServer implements BaseServer {
 
         webappBuilder.registerDefaultFaviconServlet().registerWebjars();
         webappBuilder.registerJavaServlet(IndexServlet.class,
-                ()  -> new IndexServlet(freemarkerResources, scriptManager.getService()));
+                () -> new IndexServlet(freemarkerResources, scriptManager.getService()));
         webappBuilder.registerJavaServlet(JobsServlet.class, () -> new JobsServlet(freemarkerResources));
         webappBuilder.registerJavaServlet(LibraryServlet.class,
                 () -> new LibraryServlet(freemarkerResources, componentManager));
         webappBuilder.registerJavaServlet(EditorServlet.class, () -> new EditorServlet(freemarkerResources));
+        webappBuilder.registerJavaServlet(StdOutServlet.class, () -> new StdOutServlet(freemarkerResources,
+                scriptManager.getService()));
+        webappBuilder.registerJavaServlet(StdErrServlet.class, () -> new StdErrServlet(freemarkerResources,
+                scriptManager.getService()));
         webappBuilder.registerStaticServlet("/s/*", "com.qwazr.link.front.statics");
         webappBuilder.build();
         //webappManager.registerJaxRsResources(
