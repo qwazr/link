@@ -22,7 +22,11 @@ import com.qwazr.extractor.ExtractorManager;
 import com.qwazr.extractor.ExtractorServiceInterface;
 import com.qwazr.extractor.ParserResult;
 
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 
 @Component("Text and metadata extractor")
 public class ExtractorTool implements ComponentInterface {
@@ -39,13 +43,43 @@ public class ExtractorTool implements ComponentInterface {
         }
     }
 
-    @Component("Extract text and metadata")
-    public ParserResult extract(@Component("The path to the file") String path) {
-        return getExtractorService().putMagic(null, null, path, null, null);
+    private MultivaluedMap<String, String> getMultivaluedMap(final Map<String, Object> parameters) {
+        if (parameters == null || parameters.isEmpty())
+            return null;
+        final MultivaluedMap<String, String> multivaluedMap = new MultivaluedHashMap<>();
+        parameters.forEach((key, value) -> {
+            if (value instanceof Collection) {
+                final Collection<?> collection = (Collection) value;
+                collection.forEach(val -> multivaluedMap.add(key, val.toString()));
+            } else
+                multivaluedMap.add(key, value.toString());
+        });
+        return multivaluedMap;
     }
 
     @Component("Extract text and metadata")
-    public ParserResult extract(@Component("A crawled content") DriverInterface.Content content) throws IOException {
-        return getExtractorService().putMagic(null, null, null, content.getContentType(), content.getInput());
+    public ParserResult extract(@Component("The path to the file") final String path,
+                                @Component("Optional parameters passed to the parser") final Map<String, Object> parameters) {
+        return getExtractorService().extractMagic(getMultivaluedMap(parameters), null, path, null, null);
     }
+
+    @Component("Extract text and metadata")
+    public ParserResult extract(@Component("The path to the file") final String path) {
+        return extract(path, null);
+    }
+
+    @Component("Extract text and metadata")
+    public ParserResult extract(@Component("A crawled content") final DriverInterface.Content content,
+                                @Component("Optional parameters passed to the parser") final Map<String, Object> parameters)
+            throws IOException {
+        return getExtractorService().extractMagic(getMultivaluedMap(parameters), null, null,
+                content.getContentType(), content.getInput());
+    }
+
+    @Component("Extract text and metadata")
+    public ParserResult extract(@Component("A crawled content") final DriverInterface.Content content)
+            throws IOException {
+        return extract(content, null);
+    }
+
 }
