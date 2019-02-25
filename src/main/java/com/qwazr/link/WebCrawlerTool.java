@@ -21,7 +21,8 @@ import com.qwazr.crawler.web.WebCrawlDefinition;
 import com.qwazr.crawler.web.WebCrawlStatus;
 import com.qwazr.crawler.web.WebCrawlerManager;
 import com.qwazr.crawler.web.WebCrawlerServiceInterface;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import com.qwazr.scripts.ScriptUtils;
+import org.graalvm.polyglot.Value;
 
 import java.io.IOException;
 
@@ -44,9 +45,9 @@ public class WebCrawlerTool implements ComponentInterface {
 
     @Component("Start a crawl session")
     public WebCrawlStatus crawl(@Component("The crawl ID") String crawlId,
-                                @Component("The crawl definition") ScriptObjectMirror crawlDefinition)
+                                @Component("The crawl definition") Value crawlDefinition)
             throws IOException {
-        final WebCrawlDefinition webCrawlDefinition = LinkUtils.convert(crawlDefinition, WebCrawlDefinition.class);
+        final WebCrawlDefinition webCrawlDefinition = ScriptUtils.fromJson(crawlDefinition, WebCrawlDefinition.class);
         return getWebCrawlerService().runSession(crawlId, webCrawlDefinition);
     }
 

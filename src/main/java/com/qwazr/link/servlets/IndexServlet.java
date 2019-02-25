@@ -46,11 +46,7 @@ public class IndexServlet extends AbstractServlet {
         if (StringUtils.isBlank(scriptPath)) {
             transaction.addMessage(Messages.Type.danger, "Error", "The script path is empty.", true);
         } else {
-            try {
-                scriptService.runAsync(scriptPath, null);
-            } catch (ClassNotFoundException e) {
-                transaction.addMessage(e);
-            }
+            scriptService.runAsync(scriptPath, null);
         }
         doGet(transaction);
     }

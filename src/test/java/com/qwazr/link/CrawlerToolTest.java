@@ -15,7 +15,6 @@
  */
 package com.qwazr.link;
 
-import com.qwazr.utils.IOUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -26,8 +25,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -50,15 +47,11 @@ public class CrawlerToolTest {
     @Test
     public void test() {
         final Client client = ClientBuilder.newClient();
-        try {
-            try (final Response response = client
-                    .target("http://localhost:9090")
-                    .request()
-                    .post(Entity.form(new Form().param("linkscript", IOUtils.readPathAsString(SCRIPT, StandardCharsets.UTF_8))))) {
-                Assert.assertThat(response.readEntity(String.class), response.getStatus(), equalTo(200));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try (final Response response = client
+                .target("http://localhost:9090")
+                .request()
+                .post(Entity.form(new Form().param("scriptPath", SCRIPT.toString())))) {
+            Assert.assertThat(response.readEntity(String.class), response.getStatus(), equalTo(200));
         } finally {
             client.close();
         }

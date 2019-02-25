@@ -105,7 +105,7 @@ public class LinkServer implements BaseServer {
     public static synchronized void shutdown() {
         if (INSTANCE == null)
             return;
-        INSTANCE.server.stopAll();
+        INSTANCE.server.close();
         INSTANCE = null;
     }
 
