@@ -21,10 +21,15 @@ import com.qwazr.crawler.web.WebCrawlDefinition;
 import com.qwazr.crawler.web.WebCrawlStatus;
 import com.qwazr.crawler.web.WebCrawlerManager;
 import com.qwazr.crawler.web.WebCrawlerServiceInterface;
+import com.qwazr.crawler.web.driver.DriverInterface;
 import com.qwazr.scripts.ScriptUtils;
 import org.graalvm.polyglot.Value;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 @Component("Web crawler")
 public class WebCrawlerTool implements ComponentInterface {
@@ -51,6 +56,16 @@ public class WebCrawlerTool implements ComponentInterface {
         return getWebCrawlerService().runSession(crawlId, webCrawlDefinition);
     }
 
+    @Component("Save the crawled content to a file")
+    public void save(@Component("The crawled content") DriverInterface.Content content,
+                     @Component("The path of the file") String path) throws IOException {
+        final Path destPath = Path.of(path);
+        try (final InputStream input = content.getInput()) {
+            Files.copy(input, destPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new IOException("Cannot write the file " + destPath.toAbsolutePath() + " - " + e.getMessage(), e);
+        }
+    }
 
 }
 
